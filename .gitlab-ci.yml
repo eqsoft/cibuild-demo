@@ -1,0 +1,103 @@
+---
+variables:
+  #CIBUILDER_IMAGE: "${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/stack4ops/cibuilder"
+  CIBUILDER_IMAGE: "docker.io/stack4ops/cibuilder"
+  CIBUILDER_REF: "rootless"
+
+image: "${CIBUILDER_IMAGE}:${CIBUILDER_REF}"
+
+workflow:
+  rules:
+    # Trigger rules:
+    # The default CI_PIPELINE_SOURCE trigger is schedule
+    # Edit or comment in other trigger below
+
+    # Create a pipline on schedules
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+    # Create a pipline on every push commit
+    # - if: $CI_PIPELINE_SOURCE == "push"
+
+    # Create a pipeline on merge_requests_event
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+    # Create a pipline on web "Run pipline"
+    # - if: $CI_PIPELINE_SOURCE == "web" 
+
+    # Example: Create pipeline on every push on every branch except main branch
+    # - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+    #   when: never
+
+stages:
+  - check
+  - build
+  - test
+  - deploy
+
+check:
+  stage: check
+  variables:
+    CIBUILD_RUN: check
+  script:
+    - /bin/true
+  
+build-amd64:
+  stage: build
+  variables:
+    BUILD_NATIVE: 1
+    CIBUILD_RUN: build
+  script:
+    - /bin/true
+  tags:
+    - saas-linux-medium-amd64
+
+build-arm64:
+  stage: build
+  variables:
+    BUILD_NATIVE: 1
+    CIBUILD_RUN: build
+  script:
+    - /bin/true
+  tags:
+    - saas-linux-medium-arm64
+
+test-amd64:
+  stage: test
+  services:
+    - name: docker:dind
+      alias: docker
+  variables:
+    CIBUILD_RUN: test
+    TEST_BACKEND: docker
+    TEST_RUN_TIMEOUT: 120
+    DIND_ENABLED: 1
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - /bin/true
+  tags:
+    - saas-linux-medium-amd64
+
+test-arm64:
+  stage: test
+  services:
+    - name: docker:dind
+      alias: docker
+  variables:
+    CIBUILD_RUN: test
+    TEST_BACKEND: docker
+    TEST_RUN_TIMEOUT: 120
+    DIND_ENABLED: 1
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - /bin/true
+  tags:
+    - saas-linux-medium-arm64
+
+deploy:
+  stage: deploy
+  variables:
+    CIBUILD_RUN: deploy
+  script:
+    - /bin/true
