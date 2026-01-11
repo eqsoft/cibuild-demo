@@ -44,9 +44,9 @@ all:
     # __REF__ __COMMIT__ __DATE__ __DATE_TIME__
     # here: target tag = latest-BRANCHNAME
     CIBUILD_TARGET_TAG: latest-__REF__
-    # additional tags comma seperated list
+    # deploy additional tags comma seperated list
     # here: commit-digest as additional tag
-    CIBUILD_ADDITIONAL_TAGS: __COMMIT__
+    CIBUILD_DEPLOY_ADDITIONAL_TAGS: __COMMIT__
     
   script:
     - /bin/true
