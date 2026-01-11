@@ -29,75 +29,26 @@ workflow:
     #   when: never
 
 stages:
-  - check
-  - build
-  - test
-  - deploy
-
-check:
-  stage: check
-  variables:
-    CIBUILD_RUN: check
-  script:
-    - /bin/true
+  - all
   
-build-amd64:
-  stage: build
+all:
+  stage: all
   variables:
-    BUILD_NATIVE: 1
-    CIBUILD_RUN: build
+    # all: defaults to build and deploy run. 
+    # check and test runs can be enabled by CIBUILD_BUILD_CHECK_ENABLED=1, CIBUILD_BUILD_TEST_ENABLED=1
+    CIBUILD_RUN_CMD: all
+    # CIBUILD_TARGET_REGISTRY_USER and CIBUILD_TARGET_REGISTRY_PASS are defined as masked CI variables
+    CIBUILD_TARGET_REGISTRY: docker.io
+    CIBUILD_TARGET_IMAGE_PATH: stack4ops/as-generic-demo
+    # available template placeholder:
+    # __REF__ __COMMIT__ __DATE__ __DATE_TIME__
+    # here: target tag = latest-BRANCHNAME
+    CIBUILD_TARGET_TAG: latest-__REF__
+    # additional tags comma seperated list
+    # here: commit-digest as additional tag
+    CIBUILD_ADDITIONAL_TAGS: __COMMIT__
+    
   script:
     - /bin/true
   tags:
     - saas-linux-medium-amd64
-
-build-arm64:
-  stage: build
-  variables:
-    BUILD_NATIVE: 1
-    CIBUILD_RUN: build
-  script:
-    - /bin/true
-  tags:
-    - saas-linux-medium-arm64
-
-test-amd64:
-  stage: test
-  services:
-    - name: docker:dind
-      alias: docker
-  variables:
-    CIBUILD_RUN: test
-    TEST_BACKEND: docker
-    TEST_RUN_TIMEOUT: 120
-    DIND_ENABLED: 1
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-  script:
-    - /bin/true
-  tags:
-    - saas-linux-medium-amd64
-
-test-arm64:
-  stage: test
-  services:
-    - name: docker:dind
-      alias: docker
-  variables:
-    CIBUILD_RUN: test
-    TEST_BACKEND: docker
-    TEST_RUN_TIMEOUT: 120
-    DIND_ENABLED: 1
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-  script:
-    - /bin/true
-  tags:
-    - saas-linux-medium-arm64
-
-deploy:
-  stage: deploy
-  variables:
-    CIBUILD_RUN: deploy
-  script:
-    - /bin/true
