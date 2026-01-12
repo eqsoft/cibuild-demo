@@ -85,6 +85,7 @@ test-arm64:
     - name: docker:dind
       alias: docker
   variables:
+    CIBUILD_TEST_ENABLED: 1
     CIBUILD_RUN_CMD: test
     CIBUILD_TEST_BACKEND: docker
     CIBUILD_TEST_RUN_TIMEOUT: 120
