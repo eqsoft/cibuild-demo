@@ -1,0 +1,33 @@
+name: Simple Build & Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  all:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run cibuilder pipeline
+        env:
+          CIBUILD_TARGET_REGISTRY_USER: ${{ secrets.CIBUILD_TARGET_REGISTRY_USER }}
+          CIBUILD_TARGET_REGISTRY_PASS: ${{ secrets.CIBUILD_TARGET_REGISTRY_PASS }}
+        run: |
+          cat <<EOF > github.env
+          GITHUB_SHA=$GITHUB_SHA
+          GITHUB_REF=$GITHUB_REF
+          GITHUB_REF_NAME=$GITHUB_REF_NAME
+          GITHUB_RUN_ID=$GITHUB_RUN_ID
+          GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER
+          GITHUB_ACTIONS=$GITHUB_ACTIONS
+          GITHUB_REPOSITORY=$GITHUB_REPOSITORY
+          GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME
+          GITHUB_WORKSPACE=$GITHUB_WORKSPACE
+          CIBUILD_RUN_CMD=check
+          EOF
+          docker run --rm \
+            --env-file github.env \
+            -v "$PWD:/workspace" \
+            docker.io/stack4ops/cibuilder:rootless
