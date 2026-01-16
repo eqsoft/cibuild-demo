@@ -12,6 +12,7 @@ jobs:
 
       - name: Run cibuilder pipeline
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CIBUILDER_BIN_REF: ${{ vars.CIBUILDER_BIN_REF }}
           CIBUILD_TARGET_REGISTRY: ${{ vars.CIBUILD_TARGET_REGISTRY }}
           CIBUILD_TARGET_IMAGE_PATH: ${{ vars.CIBUILD_TARGET_IMAGE_PATH }}
