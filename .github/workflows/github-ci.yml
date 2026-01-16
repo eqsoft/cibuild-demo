@@ -1,0 +1,138 @@
+name: CIBuilder Multi-Arch Pipeline
+
+on:
+  workflow_dispatch:
+
+env:
+  CIBUILDER_IMAGE: docker.io/stack4ops/cibuilder:rootless
+  CIBUILDER_BIN_REF: main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CIBUILD_CHECK_ENABLED: 1
+      CIBUILD_RUN_CMD: check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            $CIBUILDER_IMAGE
+
+  build:
+    needs: check
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CIBUILD_BUILD_NATIVE: 1
+      CIBUILD_RUN_CMD: build
+      TARGET_ARCH: ${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (${{ matrix.arch }})
+        run: |
+          cat <<EOF > github.env
+          GITHUB_SHA=$GITHUB_SHA
+          GITHUB_REF=$GITHUB_REF
+          GITHUB_REF_NAME=$GITHUB_REF_NAME
+          GITHUB_RUN_ID=$GITHUB_RUN_ID
+          GITHUB_REPOSITORY=$GITHUB_REPOSITORY
+          GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME
+          GITHUB_ACTOR=$GITHUB_ACTOR
+          CIBUILDER_BIN_REF=$CIBUILDER_BIN_REF
+          CIBUILD_RUN_CMD=$CIBUILD_RUN_CMD
+          CIBUILD_BUILD_NATIVE=$CIBUILD_BUILD_NATIVE
+          TARGET_ARCH=$TARGET_ARCH
+          EOF
+
+          docker run --privileged --rm \
+            --env-file github.env \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            $CIBUILDER_IMAGE
+
+  test:
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    env:
+      CIBUILD_TEST_ENABLED: 1
+      CIBUILD_RUN_CMD: test
+      CIBUILD_TEST_BACKEND: docker
+      CIBUILD_TEST_RUN_TIMEOUT: 120
+      DOCKER_HOST: tcp://docker:2375
+      DOCKER_TLS_CERTDIR: ""
+      TARGET_ARCH: ${{ matrix.arch }}
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test (${{ matrix.arch }})
+        run: |
+          cat <<EOF > github.env
+          CIBUILD_RUN_CMD=$CIBUILD_RUN_CMD
+          CIBUILD_TEST_ENABLED=$CIBUILD_TEST_ENABLED
+          CIBUILD_TEST_BACKEND=$CIBUILD_TEST_BACKEND
+          CIBUILD_TEST_RUN_TIMEOUT=$CIBUILD_TEST_RUN_TIMEOUT
+          TARGET_ARCH=$TARGET_ARCH
+          EOF
+
+          docker run --privileged --rm \
+            --env-file github.env \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            $CIBUILDER_IMAGE
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CIBUILD_RUN_CMD: deploy
+      CIBUILD_DEPLOY_ADDITIONAL_TAGS: latest-__DATETIME__-__COMMIT__
+      CIBUILD_DEPLOY_MINOR_TAG_REGEX: '^(1\.29|1\.30|1\.31|1\.32|1\.33|1\.34|1\.35|1\.36|1\.37|1\.38|1\.39|1\.40)\.\d+\-\w+$'
+      CIBUILD_TARGET_REGISTRY_PASS: ${{ secrets.CIBUILD_TARGET_REGISTRY_PASS }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: |
+          cat <<EOF > github.env
+          CIBUILD_RUN_CMD=$CIBUILD_RUN_CMD
+          CIBUILD_DEPLOY_ADDITIONAL_TAGS=$CIBUILD_DEPLOY_ADDITIONAL_TAGS
+          CIBUILD_DEPLOY_MINOR_TAG_REGEX=$CIBUILD_DEPLOY_MINOR_TAG_REGEX
+          CIBUILD_TARGET_REGISTRY_PASS=$CIBUILD_TARGET_REGISTRY_PASS
+          GITHUB_TOKEN=$GITHUB_TOKEN
+          EOF
+
+          docker run --privileged --rm \
+            --env-file github.env \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            $CIBUILDER_IMAGE

@@ -37,7 +37,7 @@ stages:
 check:
   stage: check
   variables:
-    CIBUILD_CHECK_ENABLED: 1
+    CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: check
   script:
     - /bin/true
@@ -45,7 +45,7 @@ check:
 build-amd64:
   stage: build
   variables:
-    CIBUILD_BUILD_NATIVE: 1
+    CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: build
   script:
     - /bin/true
@@ -55,7 +55,7 @@ build-amd64:
 build-arm64:
   stage: build
   variables:
-    CIBUILD_BUILD_NATIVE: 1
+    CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: build
   script:
     - /bin/true
@@ -68,12 +68,8 @@ test-amd64:
     - name: docker:dind
       alias: docker
   variables:
-    CIBUILD_TEST_ENABLED: 1
+    CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: test
-    CIBUILD_TEST_BACKEND: docker
-    CIBUILD_TEST_RUN_TIMEOUT: 120
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
   script:
     - /bin/true
   tags:
@@ -85,12 +81,8 @@ test-arm64:
     - name: docker:dind
       alias: docker
   variables:
-    CIBUILD_TEST_ENABLED: 1
+    CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: test
-    CIBUILD_TEST_BACKEND: docker
-    CIBUILD_TEST_RUN_TIMEOUT: 120
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
   script:
     - /bin/true
   tags:
@@ -99,8 +91,7 @@ test-arm64:
 deploy:
   stage: deploy
   variables:
-    CIBUILD_RUN_CMD: deploy
-    CIBUILD_DEPLOY_ADDITIONAL_TAGS: latest-__DATETIME__-__COMMIT__
-    CIBUILD_DEPLOY_MINOR_TAG_REGEX: '^(1\.29|1\.30|1\.31|1\.32|1\.33|1\.34|1\.35|1\.36|1\.37|1\.38|1\.39|1\.40)\.\d+\-\w+$'
+    CIBUILDER_BIN_REF: main
+    CIBUILD_RUN_CMD: deploy  
   script:
     - /bin/true
