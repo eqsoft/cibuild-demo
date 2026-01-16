@@ -3,11 +3,18 @@ name: CIBuilder Multi-Arch Pipeline
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CIBUILD_CANCEL_TOKEN: ${{ secrets.CIBUILD_CANCEL_TOKEN }}
+  CIBUILD_TARGET_REGISTRY_PASS: ${{ secrets.CIBUILD_TARGET_REGISTRY_PASS }}
+
 jobs:
   check:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions
