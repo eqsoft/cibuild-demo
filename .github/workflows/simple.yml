@@ -12,8 +12,12 @@ jobs:
 
       - name: Run cibuilder pipeline
         env:
+          CIBUILD_TARGET_REGISTRY: ${{ env.CIBUILD_TARGET_REGISTRY }}
+          CIBUILD_TARGET_IMAGE_PATH: ${{ env.CIBUILD_TARGET_IMAGE_PATH }}
           CIBUILD_TARGET_REGISTRY_USER: ${{ secrets.CIBUILD_TARGET_REGISTRY_USER }}
           CIBUILD_TARGET_REGISTRY_PASS: ${{ secrets.CIBUILD_TARGET_REGISTRY_PASS }}
+          CIBUILD_CANCEL_TOKEN: ${{ secrets.CIBUILD_CANCEL_TOKEN }}
+          
         run: |
           cat <<EOF > github.env
           GITHUB_SHA=$GITHUB_SHA
@@ -26,8 +30,15 @@ jobs:
           GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME
           GITHUB_WORKSPACE=$GITHUB_WORKSPACE
           CIBUILD_RUN_CMD=check
-          CIBUILD_BUILD_FORCE=1
+          CIBUILD_CHECK_ENABLED=1
+          CIBUILD_TARGET_REGISTRY=$CIBUILD_TARGET_REGISTRY
+          CIBUILD_TARGET_IMAGE_PATH=$CIBUILD_TARGET_IMAGE_PATH
+          CIBUILD_TARGET_REGISTRY_USER=$CIBUILD_TARGET_REGISTRY_USER
+          CIBUILD_TARGET_REGISTRY_PASS=$CIBUILD_TARGET_REGISTRY_PASS
+          CIBUILD_CANCEL_TOKEN=$CIBUILD_CANCEL_TOKEN
           EOF
+          id
+          docker info
           docker run --rm \
             --env-file github.env \
             -v "$PWD:/workspace" \
