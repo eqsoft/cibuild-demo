@@ -36,17 +36,8 @@ all:
   variables:
     # all: defaults to build and deploy run. 
     # check and test runs can be enabled by CIBUILD_BUILD_CHECK_ENABLED=1, CIBUILD_BUILD_TEST_ENABLED=1
+    CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: all
-    # CIBUILD_TARGET_REGISTRY_USER and CIBUILD_TARGET_REGISTRY_PASS are defined as masked CI variables
-    CIBUILD_TARGET_REGISTRY: docker.io
-    CIBUILD_TARGET_IMAGE_PATH: stack4ops/as-generic-demo
-    # available template placeholder:
-    # __REF__ __COMMIT__ __DATE__ __DATE_TIME__
-    # here: target tag = latest-BRANCHNAME
-    CIBUILD_TARGET_TAG: latest-__REF__
-    # deploy additional tags comma seperated list
-    # here: commit-digest as additional tag
-    CIBUILD_DEPLOY_ADDITIONAL_TAGS: __COMMIT__
     
   script:
     - /bin/true
