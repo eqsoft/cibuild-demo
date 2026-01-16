@@ -46,7 +46,7 @@ jobs:
           CIBUILD_TARGET_REGISTRY_PASS=$CIBUILD_TARGET_REGISTRY_PASS
           CIBUILD_CANCEL_TOKEN=$CIBUILD_CANCEL_TOKEN
           EOF
-          docker run --rm \
+          docker run --privileged --rm \
             --env-file github.env \
             -v "$PWD:/workspace" \
             -w /workspace \
