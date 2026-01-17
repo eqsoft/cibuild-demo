@@ -8,39 +8,39 @@ env:
   CIBUILD_TARGET_REGISTRY_PASS: ${{ secrets.CIBUILD_TARGET_REGISTRY_PASS }}
 
 jobs:
-  # check:
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: ./.github/actions/cibuilder
-  #       with:
-  #         run_cmd: check
-  #         bin_ref: main
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cibuilder
+        with:
+          run_cmd: check
+          bin_ref: main
 
-  # build:
-  #   needs: check
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - arch: amd64
-  #           runner: ubuntu-latest
-  #         - arch: arm64
-  #           runner: ubuntu-24.04-arm
-  #   runs-on: ${{ matrix.runner }}
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: ./.github/actions/cibuilder
-  #       with:
-  #         run_cmd: build
-  #         bin_ref: main
+  build:
+    needs: check
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cibuilder
+        with:
+          run_cmd: build
+          bin_ref: main
 
   test:
-    #needs: build
+    needs: build
     strategy:
       matrix:
         include:
@@ -58,32 +58,15 @@ jobs:
           run_cmd: test
           bin_ref: main
     
-  # deploy:
-  #   needs: test
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   env:
-  #     CIBUILD_RUN_CMD: deploy
-  #     CIBUILD_DEPLOY_ADDITIONAL_TAGS: latest-__DATETIME__-__COMMIT__
-  #     CIBUILD_DEPLOY_MINOR_TAG_REGEX: '^(1\.29|1\.30|1\.31|1\.32|1\.33|1\.34|1\.35|1\.36|1\.37|1\.38|1\.39|1\.40)\.\d+\-\w+$'
-  #     CIBUILD_TARGET_REGISTRY_PASS: ${{ secrets.CIBUILD_TARGET_REGISTRY_PASS }}
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Deploy
-  #       run: |
-  #         cat <<EOF > github.env
-  #         CIBUILD_RUN_CMD=$CIBUILD_RUN_CMD
-  #         CIBUILD_DEPLOY_ADDITIONAL_TAGS=$CIBUILD_DEPLOY_ADDITIONAL_TAGS
-  #         CIBUILD_DEPLOY_MINOR_TAG_REGEX=$CIBUILD_DEPLOY_MINOR_TAG_REGEX
-  #         CIBUILD_TARGET_REGISTRY_PASS=$CIBUILD_TARGET_REGISTRY_PASS
-  #         GITHUB_TOKEN=$GITHUB_TOKEN
-  #         EOF
-
-  #         docker run --privileged --rm \
-  #           --env-file github.env \
-  #           -v "$PWD:/workspace" \
-  #           -w /workspace \
-  #           $CIBUILDER_IMAGE
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cibuilder
+        with:
+          run_cmd: deploy
+          bin_ref: main
