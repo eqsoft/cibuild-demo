@@ -13,7 +13,7 @@ workflow:
     # Edit or comment in other trigger below
 
     # Create a pipline on web "Run pipline"
-    - if: $CI_PIPELINE_SOURCE == "web" 
+    - if: $CI_PIPELINE_SOURCE == "web"
 
     # Create a pipline on schedules
     # - if: $CI_PIPELINE_SOURCE == "schedule"
