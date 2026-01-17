@@ -25,6 +25,8 @@ EOF
 
 docker network create cibuilder-net
 
+docker network inspect cibuilder-net
+
 docker run --privileged --rm -d \
   --env-file github.env \
   --network cibuilder-net \
@@ -39,7 +41,7 @@ docker run --privileged --rm -d \
   #   --insecure-registry=localregistry.example.com:5000 \
   #   --default-address-pool base=10.10.0.0/16,size=24
 
-sleep 10 
+sleep 10
 docker logs cibuilder-dind
 
 docker run --privileged --rm \
