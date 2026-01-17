@@ -51,7 +51,7 @@ build-amd64:
   script:
     - /bin/true
   tags:
-    - saas-linux-medium-amd64
+    - cibuilder-amd64
 
 build-arm64:
   stage: build
@@ -61,7 +61,7 @@ build-arm64:
   script:
     - /bin/true
   tags:
-    - saas-linux-medium-arm64
+    - cibuilder-arm64
 
 test-amd64:
   stage: test
@@ -74,7 +74,7 @@ test-amd64:
   script:
     - /bin/true
   tags:
-    - saas-linux-medium-amd64
+    - cibuilder-amd64
 
 test-arm64:
   stage: test
@@ -87,7 +87,7 @@ test-arm64:
   script:
     - /bin/true
   tags:
-    - saas-linux-medium-arm64
+    - cibuilder-arm64
 
 deploy:
   stage: deploy
