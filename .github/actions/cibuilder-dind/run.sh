@@ -25,7 +25,7 @@ EOF
 
 docker network create cibuilder-net
 
-docker run --privileged --rm \
+docker run --privileged --rm -d \
   --env-file github.env \
   --network cibuilder-net \
   --network-alias docker \
