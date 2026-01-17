@@ -23,11 +23,11 @@ DOCKER_TLS_VERIFY=
 DOCKER_TLS_CERTDIR=
 EOF
 
-docker create network cibuilder
+docker create network cibuilder-net
 
 docker run --privileged --rm \
   --env-file github.env \
-  --network cibuilder \
+  --network cibuilder-net \
   --network-alias docker \
   docker:dind
 
@@ -35,5 +35,5 @@ docker run --privileged --rm \
   --env-file github.env \
   -v "$PWD:/workspace" \
   -w /workspace \
-  --network cibuilder \
+  --network cibuilder-net \
   "$IMAGE"

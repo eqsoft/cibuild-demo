@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/cibuilder-dind/actions
+      - uses: ./.github/actions/cibuilder-dind
         with:
           run_cmd: check
           bin_ref: main
