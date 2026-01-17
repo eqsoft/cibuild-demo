@@ -1,5 +1,5 @@
-name: CIBuilder Runner
-description: Run stack4ops cibuilder in a docker container
+name: cibuilder runner dind
+description: run stack4ops cibuilder in a cibuilder net und docker-in-docker service
 
 inputs:
   run_cmd:

@@ -1,4 +1,4 @@
-name: CIBuilder Multi-Arch Pipeline
+name: cibuilder
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions
+      - uses: ./.github/cibuilder-dind/actions
         with:
           run_cmd: check
           bin_ref: main
