@@ -14,7 +14,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/cibuilder-dind
+      - uses: ./.github/actions/cibuilder
         with:
           run_cmd: check
           bin_ref: main
@@ -39,48 +39,25 @@ jobs:
           run_cmd: build
           bin_ref: main
 
-  # test:
-  #   needs: build
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - arch: amd64
-  #           runner: ubuntu-latest
-  #         - arch: arm64
-  #           runner: ubuntu-24.04-arm
-  #   runs-on: ${{ matrix.runner }}
-  #   permissions:
-  #     contents: read
-  #   env:
-  #     CIBUILD_TEST_ENABLED: 1
-  #     CIBUILD_RUN_CMD: test
-  #     CIBUILD_TEST_BACKEND: docker
-  #     CIBUILD_TEST_RUN_TIMEOUT: 120
-  #     DOCKER_HOST: tcp://docker:2375
-  #     DOCKER_TLS_CERTDIR: ""
-  #     TARGET_ARCH: ${{ matrix.arch }}
-  #   services:
-  #     docker:
-  #       image: docker:dind
-  #       options: --privileged
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Test (${{ matrix.arch }})
-  #       run: |
-  #         cat <<EOF > github.env
-  #         CIBUILD_RUN_CMD=$CIBUILD_RUN_CMD
-  #         CIBUILD_TEST_ENABLED=$CIBUILD_TEST_ENABLED
-  #         CIBUILD_TEST_BACKEND=$CIBUILD_TEST_BACKEND
-  #         CIBUILD_TEST_RUN_TIMEOUT=$CIBUILD_TEST_RUN_TIMEOUT
-  #         TARGET_ARCH=$TARGET_ARCH
-  #         EOF
-
-  #         docker run --privileged --rm \
-  #           --env-file github.env \
-  #           -v "$PWD:/workspace" \
-  #           -w /workspace \
-  #           $CIBUILDER_IMAGE
-
+  test:
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cibuilder-dind
+        with:
+          run_cmd: test
+          bin_ref: main
+    
   # deploy:
   #   needs: test
   #   runs-on: ubuntu-latest
