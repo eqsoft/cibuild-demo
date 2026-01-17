@@ -1,5 +1,5 @@
 name: cibuilder runner
-description: run stack4ops cibuilder in a standalone docker container
+description: run cibuilder in a standalone docker container
 
 inputs:
   run_cmd:
