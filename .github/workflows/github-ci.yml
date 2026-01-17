@@ -40,7 +40,7 @@ jobs:
   #         bin_ref: main
 
   test:
-    needs: build
+    #needs: build
     strategy:
       matrix:
         include:
