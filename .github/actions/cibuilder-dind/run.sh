@@ -23,7 +23,7 @@ DOCKER_TLS_VERIFY=
 DOCKER_TLS_CERTDIR=
 EOF
 
-docker create network cibuilder-net
+docker network create cibuilder-net
 
 docker run --privileged --rm \
   --env-file github.env \
