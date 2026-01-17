@@ -2,11 +2,6 @@ name: cibuilder
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: read
-  packages: write
-
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   CIBUILD_CANCEL_TOKEN: ${{ secrets.CIBUILD_CANCEL_TOKEN }}
@@ -15,6 +10,8 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/cibuilder-dind
@@ -22,46 +19,25 @@ jobs:
           run_cmd: check
           bin_ref: main
 
-  # build:
-  #   needs: check
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - arch: amd64
-  #           runner: ubuntu-latest
-  #         - arch: arm64
-  #           runner: ubuntu-24.04-arm
-  #   runs-on: ${{ matrix.runner }}
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   env:
-  #     CIBUILD_BUILD_NATIVE: 1
-  #     CIBUILD_RUN_CMD: build
-  #     TARGET_ARCH: ${{ matrix.arch }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Build (${{ matrix.arch }})
-  #       run: |
-  #         cat <<EOF > github.env
-  #         GITHUB_SHA=$GITHUB_SHA
-  #         GITHUB_REF=$GITHUB_REF
-  #         GITHUB_REF_NAME=$GITHUB_REF_NAME
-  #         GITHUB_RUN_ID=$GITHUB_RUN_ID
-  #         GITHUB_REPOSITORY=$GITHUB_REPOSITORY
-  #         GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME
-  #         GITHUB_ACTOR=$GITHUB_ACTOR
-  #         CIBUILDER_BIN_REF=$CIBUILDER_BIN_REF
-  #         CIBUILD_RUN_CMD=$CIBUILD_RUN_CMD
-  #         CIBUILD_BUILD_NATIVE=$CIBUILD_BUILD_NATIVE
-  #         TARGET_ARCH=$TARGET_ARCH
-  #         EOF
-
-  #         docker run --privileged --rm \
-  #           --env-file github.env \
-  #           -v "$PWD:/workspace" \
-  #           -w /workspace \
-  #           $CIBUILDER_IMAGE
+  build:
+    needs: check
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cibuilder
+        with:
+          run_cmd: build
+          bin_ref: main
 
   # test:
   #   needs: build
