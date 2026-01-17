@@ -33,16 +33,6 @@ docker run --privileged --rm -d \
   --network-alias docker \
   --name cibuilder-dind \
   docker:dind
-  
-  # \
-  # dockerd \
-  #   --host=tcp://0.0.0.0:2375 \
-  #   --host=unix:///var/run/docker.sock \
-  #   --insecure-registry=localregistry.example.com:5000 \
-  #   --default-address-pool base=10.10.0.0/16,size=24
-
-sleep 10
-docker logs cibuilder-dind
 
 docker run --privileged --rm \
   --env-file github.env \
