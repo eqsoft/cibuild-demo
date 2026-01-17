@@ -43,4 +43,4 @@ all:
   script:
     - /bin/true
   tags:
-    - saas-linux-medium-amd64
+    - cibuilder-amd64
