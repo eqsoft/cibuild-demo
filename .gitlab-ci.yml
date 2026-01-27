@@ -33,7 +33,6 @@ workflow:
 
 stages:
   - all
-  
 all:
   stage: all
   variables:
@@ -41,7 +40,6 @@ all:
     # check and test runs can be enabled by CIBUILD_BUILD_CHECK_ENABLED=1, CIBUILD_BUILD_TEST_ENABLED=1
     CIBUILDER_BIN_REF: main
     CIBUILD_RUN_CMD: all
-    
   script:
     - /bin/true
   tags:
