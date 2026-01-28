@@ -65,7 +65,7 @@ check:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_CI_CHECK_AMD64
+    - $CIBUILDER_RUNNER_EXTERNAL_CHECK_AMD64
   
 build-amd64:
   stage: build
@@ -75,7 +75,7 @@ build-amd64:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_CI_BUILD_AMD64
+    - $CIBUILDER_RUNNER_EXTERNAL_BUILD_AMD64
 
 build-arm64:
   stage: build
@@ -85,7 +85,7 @@ build-arm64:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_CI_BUILD_ARM64
+    - $CIBUILDER_RUNNER_EXTERNAL_BUILD_ARM64
 
 test-amd64:
   stage: test
@@ -98,7 +98,7 @@ test-amd64:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_CI_TEST_AMD64
+    - $CIBUILDER_RUNNER_EXTERNAL_TEST_AMD64
 
 test-arm64:
   stage: test
@@ -111,7 +111,7 @@ test-arm64:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_CI_TEST_ARM64
+    - $CIBUILDER_RUNNER_EXTERNAL_TEST_ARM64
 
 deploy:
   stage: deploy
@@ -121,4 +121,4 @@ deploy:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_CI_DEPLOY_AMD64
+    - $CIBUILDER_RUNNER_EXTERNAL_DEPLOY_AMD64
