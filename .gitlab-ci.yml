@@ -8,8 +8,16 @@ include:
   - component: $CI_SERVER_FQDN/$CIBUILDER_COMPONENTS_PATH/trigger@main
     inputs:
       enable_web: "true"
-  - component: $CI_SERVER_FQDN/$CIBUILDER_COMPONENTS_PATH/simple@main
-    inputs:
-      image: "${CIBUILDER_IMAGE}:${CIBUILDER_REF}"
-      bin_ref: "main"
-      run_cmd: "all"
+
+stages:
+  - all
+
+all:
+  stage: all
+  component: $CI_SERVER_FQDN/$CIBUILDER_COMPONENTS_PATH/build@main
+  inputs:
+    image: "${CIBUILDER_IMAGE}:${CIBUILDER_REF}"
+    bin_ref: main
+    run_cmd: all
+  tags:
+    - $CIBUILDER_RUNNER
