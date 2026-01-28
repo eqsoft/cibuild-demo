@@ -61,4 +61,4 @@ all:
   script:
     - /bin/true
   tags:
-    - $CIBUILDER_RUNNER_EXTERNAL_ALL_AMD64
+    - $CIBUILDER_RUNNER_CI_ALL_AMD64
