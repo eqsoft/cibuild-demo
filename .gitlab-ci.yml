@@ -4,21 +4,21 @@ variables:
   CIBUILDER_REF: 'rootless'
   CIBUILDER_RUNNER: 'cibuilder-amd64'
 
+image: "${CIBUILDER_IMAGE}:${CIBUILDER_REF}"
+
 include:
   - component: $CI_SERVER_FQDN/$CIBUILDER_COMPONENTS_PATH/trigger@main
     inputs:
       enable_web: "true"
-  - component: $CI_SERVER_FQDN/$CIBUILDER_COMPONENTS_PATH/build@main
 
 stages:
   - all
-
+  
 all:
   stage: all
-  inputs:
-    image: "${CIBUILDER_IMAGE}:${CIBUILDER_REF}"
-    bin_ref: main
-    run_cmd: all
+  variables:
+    CIBUILDER_BIN_REF: main
+    CIBUILD_RUN_CMD: all
   script:
     - /bin/true
   tags:
