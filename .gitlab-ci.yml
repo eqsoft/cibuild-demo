@@ -19,5 +19,7 @@ all:
     image: "${CIBUILDER_IMAGE}:${CIBUILDER_REF}"
     bin_ref: main
     run_cmd: all
+  script:
+    - /bin/true
   tags:
     - $CIBUILDER_RUNNER
