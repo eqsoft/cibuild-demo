@@ -3,17 +3,6 @@ name: cibuilder
 on:
   workflow_dispatch:
 env:
-  CIBUILDER_RUNNER_ALL_AMD64: ${{ vars.CIBUILDER_RUNNER_ALL_AMD64 || 'ubuntu-latest' }}
-  CIBUILDER_RUNNER_ALL_ARM64: ${{ vars.CIBUILDER_RUNNER_ALL_ARM64 || 'ubuntu-24.04-arm' }}
-  CIBUILDER_RUNNER_CHECK_AMD64: ${{ vars.CIBUILDER_RUNNER_CHECK_AMD64 || 'ubuntu-latest' }}
-  CIBUILDER_RUNNER_CHECK_ARM64: ${{ vars.CIBUILDER_RUNNER_CHECK_ARM64 || 'ubuntu-24.04-arm' }}
-  CIBUILDER_RUNNER_BUILD_AMD64: ${{ vars.CIBUILDER_RUNNER_BUILD_AMD64 || 'ubuntu-latest' }}
-  CIBUILDER_RUNNER_BUILD_ARM64: ${{ vars.CIBUILDER_RUNNER_BUILD_ARM64 || 'ubuntu-24.04-arm' }}
-  CIBUILDER_RUNNER_TEST_AMD64: ${{ vars.CIBUILDER_RUNNER_TEST_AMD64 || 'ubuntu-latest' }}
-  CIBUILDER_RUNNER_TEST_ARM64: ${{ vars.CIBUILDER_RUNNER_TEST_ARM64 || 'ubuntu-24.04-arm' }}
-  CIBUILDER_RUNNER_DEPLOY_AMD64: ${{ vars.CIBUILDER_RUNNER_DEPLOY_AMD64 || 'ubuntu-latest' }}
-  CIBUILDER_RUNNER_DEPLOY_ARM64: ${{ vars.CIBUILDER_RUNNER_DEPLOY_ARM64 || 'ubuntu-24.04-arm' }}
-
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || '' }}
   CIBUILD_CI_TOKEN: ${{ secrets.CIBUILD_CI_TOKEN || '' }}
   CIBUILD_BASE_REGISTRY_PASS: ${{ secrets.CIBUILD_BASE_REGISTRY_PASS  || '' }}
@@ -24,7 +13,7 @@ env:
 
 jobs:
   all:
-    runs-on: ${{ env.CIBUILDER_RUNNER_ALL_AMD64 }}
+    runs-on: cibuilder-amd64
     permissions:
       contents: read
       packages: write
