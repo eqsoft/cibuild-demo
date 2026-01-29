@@ -4,8 +4,10 @@ LABEL maintainer="Stefan Schneider <eqsoft4@gmail.com>"
 
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
-ARG http_proxy
-ARG https_proxy
+ARG NO_PROXY
+ARG http_proxy=$HTTP_PROXY
+ARG https_proxy=$HTTPS_PROXY
+ARG no_proxy=$NO_PROXY
 
 ARG TARGETARCH
 
