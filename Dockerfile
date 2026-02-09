@@ -2,6 +2,8 @@ FROM nginx
 
 LABEL maintainer="Stefan Schneider <eqsoft4@gmail.com>"
 
+ARG TARGETARCH
+
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
 ARG NO_PROXY
@@ -10,8 +12,6 @@ ARG http_proxy=$HTTP_PROXY
 ARG https_proxy=$HTTPS_PROXY
 ARG no_proxy=$NO_PROXY
 ARG all_proxy=$ALL_PROXY
-
-ARG TARGETARCH
 
 ARG UID=33
 ARG GID=33
@@ -52,7 +52,7 @@ echo signing-ca.crt >> /etc/ca-certificates.conf
 update-ca-certificates
 EOF
 
-USER "$UID:$GID"
+USER $UID:$GID
 
 STOPSIGNAL SIGQUIT
 CMD ["nginx", "-g", "daemon off;"]
